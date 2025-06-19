@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+	<article>
+		<section>
+			<div>
+				<div class="card text-center">
+						
+					<style>
+						#homesection {
+							/*border: 1px solid;*/
+						}
+						
+						.homesection_01{
+							/*border: 1px solid;*/
+							width:25%;
+							float: left;
+						}
+						.card-title1 {
+				        	display: inline-block;
+				        	text-align: center;
+				        	width:100%;
+				        	height:40px;
+				        	border: 1px solid;
+				  			cursor: pointer;
+				  			font-size: 14px; 
+				  			color: black;
+							padding-top: 0px;   
+							line-height:40px;	
+							/*background-color: rgb(36, 160, 67);*/
+							border-radius: 10px;
+						
+						}
+					</style>
+					
+					<div id="homesection">
+						<div class="homesection_01">
+							<div class="card-body">
+								<h5 class="card-title1">인기 검색어</h5>
+								<ul id="searchlist">
+								</ul>
+
+							</div>
+						</div>
+						<div class="homesection_01">
+							<div class="card-body">
+								<h5 class="card-title1"> 인기영화목록</h5>
+								<ul id="searchlist2">
+								</ul>
+							</div>
+						</div>
+						<div class="homesection_01">
+							<div class="card-body">
+								<h5 class="card-title1"> 취향 저격 영화</h5>
+								<ul id="searchlist3">
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+		</section>
+
+	</article>
+
+
+</body>
+</html>
+<style>
+	.textcenter {
+		text-align: left;
+		
+	}
+
+</style>
+<script>
+    $(document).ready(function(){//페이지가 로딩되자마자 호출하는 함수
+        $.ajax({
+            type :'GET',
+            url: 'http://127.0.0.1:5000/getString',
+            dataType:'text',
+            success:function(data){
+                console.log(data);
+
+            },
+            error:function(x){
+                console.log(x);
+                console.log('실패')
+            }
+        });
+
+        $.ajax({
+            type :'GET',
+            url: 'http://127.0.0.1:5000/gettop10',
+            dataType:'json',
+            success:function(data){
+                for(var d of data){
+                    console.log(d.title);
+                    var innerHtml='';
+                    innerHtml+='<li class="textcenter"><span onclick=gocos(this.innerText)>'+d.title+'</span></li>'
+                    $('#searchlist2').append(innerHtml);
+                }
+            },
+            error:function(x){
+                console.log(x);
+                console.log('실패')
+            }
+        })
+    });
+
+	function gocos(title){
+		$('#searchlist3').text('');
+		$.ajax({
+			type:'GET',
+			url:'http://127.0.0.1:5000/get_costop10?moviename='+title,
+			dataType:'json',
+			success:function(data){
+				for(var d of data){
+					var innerHtml='';
+					innerHtml += '<li class="textcenter"><span onclick=gocos(this.innerText)>'+d.name+'</span></li>';
+					$('#searchlist3').append(innerHtml);
+				}
+			}
+		})
+	}
+      
+</script>
